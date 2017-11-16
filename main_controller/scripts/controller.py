@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
-#import roslib; roslib.load_manifest('smach_tutorials')
+from main_controller.srv import *
 import rospy
 import smach
 import smach_ros
 import time
 
+
 # define state Sleep 
 class Sleep(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['waking up'])
-        self.counter = 0
 
     def execute(self, userdata):
         rospy.loginfo('Executing state Sleep')
@@ -20,12 +20,20 @@ class Sleep(smach.State):
 # define state Awake
 class Awake(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['sleeping'])
+        smach.State.__init__(self, outcomes=['go to sleep', 'stay awake'])
 
     def execute(self, userdata):
         rospy.loginfo('Executing state Awake')
         time.sleep(5)
-        return 'sleeping'
+        return 'go to sleep'
+
+        #rospy.loginfo('g_receive_sleep_command %s' % sleep_command)
+        #if sleep_command:
+        #    rospy.loginfo('Go to sleep')
+        #    return 'sleeping'
+        #else:
+        #    rospy.loginfo('Stay awake')
+        #    return 'stay awake'
 
 # main
 def main():
@@ -40,7 +48,8 @@ def main():
         smach.StateMachine.add('SLEEP', Sleep(), 
                                transitions={'waking up':'AWAKE'})
         smach.StateMachine.add('AWAKE', Awake(), 
-                               transitions={'sleeping':'SLEEP'})
+                               transitions={'go to sleep':'SLEEP',
+                               'stay awake':'AWAKE'})
 
     # Execute SMACH plan
     outcome = sm.execute()
