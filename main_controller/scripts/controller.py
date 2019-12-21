@@ -29,6 +29,7 @@ class Awake(smach.State):
 def callback(msg):
     global g_remote_output
     g_remote_output = msg
+    rospy.loginfo('received command')
 
 
 def main():
