@@ -8,7 +8,7 @@ function start_pineapple() {
 }
 
 function compile_and_start_pineapple() {
-    cd $WS/code/catkin_ws/
+    cd $HOME/code/catkin_ws/
     catkin_make install
     sleep 5
     start_pineapple
@@ -17,3 +17,4 @@ function compile_and_start_pineapple() {
 function stop_pineapple() {
     /home/ubuntu/code/pineapple/setup_files/stop_pineapple.bash
 }
+

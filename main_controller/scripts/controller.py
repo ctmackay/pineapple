@@ -19,17 +19,25 @@ class Sleep(smach.State):
 
 class Awake(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['go to sleep', 'stay awake'])
+        smach.State.__init__(self, outcomes=['go to sleep', 'stay awake', 'need to rest'])
 
     def execute(self, userdata):
         time.sleep(3)
         return 'stay awake'
 
+class Rest(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['go to sleep', 'stop resting', 'need more rest'])
 
-# def callback(msg):
-#     global g_remote_output
-#     g_remote_output = msg
-#     rospy.loginfo('received action: [%d]' % g_remote_output.action)
+    def execute(self, userdata):
+        time.sleep(3)
+        return 'need more rest'
+
+
+def callback(msg):
+    global g_remote_output
+    g_remote_output = msg
+    rospy.loginfo('received action: [%d]' % g_remote_output.action)
 
 
 def main():
@@ -39,15 +47,18 @@ def main():
     sm = smach.StateMachine(outcomes=['waking up'])
 
     # Subscribers
-#    rospy.Subscriber('/remote', Remote, callback)
+    rospy.Subscriber('/remote', Remote, callback)
 
     # Open the container
     with sm:
         # Add states to the container
-        smach.StateMachine.add('SLEEP', Sleep(), 
+        smach.StateMachine.add('SLEEP', Sleep(),
                 transitions={'waking up':'AWAKE', 'stay asleep':'SLEEP'})
-        smach.StateMachine.add('AWAKE', Awake(), 
-                transitions={'go to sleep':'SLEEP', 'stay awake':'AWAKE'})
+        smach.StateMachine.add('AWAKE', Awake(),
+                transitions={'go to sleep':'SLEEP', 'stay awake':'AWAKE', 'need to rest':'REST'})
+        smach.StateMachine.add('REST', Rest(),
+                transitions={'go to sleep':'SLEEP', 'stop resting':'AWAKE', 'need more rest':'REST'})
+
 
     # Execute SMACH plan
     outcome = sm.execute()
