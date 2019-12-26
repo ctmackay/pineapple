@@ -1,4 +1,4 @@
-export WS="/home/ubuntu"
+export HOME="/home/ubuntu"
 
 function start_pineapple() {
     echo "Starting"
@@ -12,4 +12,8 @@ function compile_and_start_pineapple() {
     catkin_make install
     sleep 5
     start_pineapple
+}
+
+function stop_pineapple() {
+    /home/ubuntu/code/pineapple/setup_files/stop_pineapple.bash
 }
