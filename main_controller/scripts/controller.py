@@ -26,10 +26,10 @@ class Awake(smach.State):
         return 'stay awake'
 
 
-def callback(msg):
-    global g_remote_output
-    g_remote_output = msg
-    rospy.loginfo('received command')
+# def callback(msg):
+#     global g_remote_output
+#     g_remote_output = msg
+#     rospy.loginfo('received action: [%d]' % g_remote_output.action)
 
 
 def main():
@@ -39,7 +39,7 @@ def main():
     sm = smach.StateMachine(outcomes=['waking up'])
 
     # Subscribers
-    rospy.Subscriber('/remote', Remote, callback)
+#    rospy.Subscriber('/remote', Remote, callback)
 
     # Open the container
     with sm:
