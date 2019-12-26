@@ -14,6 +14,10 @@ class Sleep(smach.State):
 
     def execute(self, userdata):
         time.sleep(3)
+        if not g_remote_output is None:
+            if g_remote_output.action == g_remote_output.WAKE:
+                return 'waking up'
+
         return 'stay asleep'
 
 
@@ -23,7 +27,12 @@ class Awake(smach.State):
 
     def execute(self, userdata):
         time.sleep(3)
+        if not g_remote_output is None:
+            if g_remote_output.action == g_remote_output.REST:
+                return 'need to rest'
+
         return 'stay awake'
+
 
 class Rest(smach.State):
     def __init__(self):

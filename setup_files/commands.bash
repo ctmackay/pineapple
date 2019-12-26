@@ -13,6 +13,7 @@ function compile_and_start_pineapple() {
     catkin_make install
     sleep 5
     start_pineapple
+    cd $HOME/code/pineapple
 }
 
 function stop_pineapple() {
