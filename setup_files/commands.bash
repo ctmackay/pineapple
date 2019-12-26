@@ -8,6 +8,7 @@ function start_pineapple() {
 }
 
 function compile_and_start_pineapple() {
+    stop_pineapple
     cd $HOME/code/catkin_ws/
     catkin_make install
     sleep 5
