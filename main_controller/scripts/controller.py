@@ -5,14 +5,32 @@ import rospy
 import smach
 import smach_ros
 import time
+from std_msgs.msg import String
+
+from sense_hat import SenseHat
+
+try:
+    g_sh = SenseHat()
+    g_sh.clear()
+except:
+    rospy.loginfo('No SenseHat detected')
+    g_sh = None
 
 g_remote_output = None
+
+def humidity_display():
+    if g_sh is not None:
+        humidity_percentage = g_sh.get_humidity()
+        rospy.loginfo("humidity: %.2f%%" % humidity_percentage)
+        g_sh.show_message(str(humidity_percentage))
 
 class Sleep(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['waking up', 'stay asleep'])
 
     def execute(self, userdata):
+        humidity_display()
+
         time.sleep(3)
         if not g_remote_output is None:
             if g_remote_output.action == g_remote_output.WAKE:
@@ -67,7 +85,6 @@ def main():
                 transitions={'go to sleep':'SLEEP', 'stay awake':'AWAKE', 'need to rest':'REST'})
         smach.StateMachine.add('REST', Rest(),
                 transitions={'go to sleep':'SLEEP', 'stop resting':'AWAKE', 'need more rest':'REST'})
-
 
     # Execute SMACH plan
     outcome = sm.execute()
