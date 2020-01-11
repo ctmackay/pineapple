@@ -12,6 +12,8 @@ from sense_hat import SenseHat
 try:
     g_sh = SenseHat()
     g_sh.clear()
+    g_sh.set_rotation(180)
+    g_sh.low_light = True
 except:
     rospy.loginfo('No SenseHat detected')
     g_sh = None
@@ -20,9 +22,13 @@ g_remote_output = None
 
 def humidity_display():
     if g_sh is not None:
-        humidity_percentage = g_sh.get_humidity()
-        rospy.loginfo("humidity: %.2f%%" % humidity_percentage)
-        g_sh.show_message(str(humidity_percentage))
+        humidity_percentage = ("%.0f%%" % g_sh.get_humidity())
+        rospy.loginfo("humidity: %s" % humidity_percentage)
+        if g_sh.get_humidity() > 50:
+            text_color = (122, 233, 122)
+        else:
+            text_color = (232, 121, 121)
+        g_sh.show_message(str(humidity_percentage), scroll_speed=0.2, text_colour=text_color)
 
 class Sleep(smach.State):
     def __init__(self):
