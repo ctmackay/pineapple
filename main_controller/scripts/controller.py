@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
 from main_controller.msg import *
+from datetime import datetime
 import rospy
 import smach
 import smach_ros
 import time
 from std_msgs.msg import String
+from random import randint
 
 from sense_hat import SenseHat
 
@@ -20,22 +22,26 @@ except:
 
 g_remote_output = None
 
-def humidity_display():
+def show_humidity():
     if g_sh is not None:
         humidity_percentage = ("%.0f%%" % g_sh.get_humidity())
         rospy.loginfo("humidity: %s" % humidity_percentage)
-        if g_sh.get_humidity() > 50:
-            text_color = (122, 233, 122)
-        else:
-            text_color = (232, 121, 121)
+        text_color = (232, 121, 121)
         g_sh.show_message(str(humidity_percentage), scroll_speed=0.2, text_colour=text_color)
+
+def show_time():
+        time_color = (55, 55, 255)
+        now = datetime.now()
+        current_time = now.strftime("%H:%M")
+        g_sh.show_message(str(current_time), scroll_speed=0.2, text_colour=time_color)
 
 class Sleep(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['waking up', 'stay asleep'])
 
     def execute(self, userdata):
-        humidity_display()
+        show_humidity()
+        show_time()
 
         time.sleep(3)
         if not g_remote_output is None:
