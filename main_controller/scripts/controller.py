@@ -74,7 +74,7 @@ def callback(msg):
 
 def main():
     global SH
-    from main_controller.Environment import Environment
+    from main_controller.SenseHatEnvironment import Environment
     SH = Environment()
 
     rospy.init_node('smach_example_state_machine')
