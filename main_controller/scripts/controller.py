@@ -14,7 +14,6 @@ from sense_hat import SenseHat
 try:
     g_sh = SenseHat()
     g_sh.clear()
-    g_sh.set_rotation(180)
     g_sh.low_light = True
 except:
     rospy.loginfo('No SenseHat detected')
@@ -22,26 +21,20 @@ except:
 
 g_remote_output = None
 
-def show_humidity():
-    if g_sh is not None:
-        humidity_percentage = ("%.0f%%" % g_sh.get_humidity())
-        rospy.loginfo("humidity: %s" % humidity_percentage)
-        text_color = (232, 121, 121)
-        g_sh.show_message(str(humidity_percentage), scroll_speed=0.2, text_colour=text_color)
-
-def show_time():
-        time_color = (55, 55, 255)
-        now = datetime.now()
-        current_time = now.strftime("%H:%M")
-        g_sh.show_message(str(current_time), scroll_speed=0.2, text_colour=time_color)
+def get_time_string():
+    time_color = (55, 55, 255)
+    now = datetime.now()
+    current_time = now.strftime("%H:%M")
+    return str(current_time)
 
 class Sleep(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['waking up', 'stay asleep'])
 
     def execute(self, userdata):
-        show_humidity()
-        show_time()
+        SH.show_on_led(SH.get_humidity(), (232, 121, 121))
+        SH.show_on_led(get_time_string(), (55, 55, 255))
+        SH.show_on_led("Welcome to Charles & Cherry's home!", (153, 255, 153))
 
         time.sleep(3)
         if not g_remote_output is None:
@@ -80,6 +73,10 @@ def callback(msg):
 
 
 def main():
+    global SH
+    from main_controller.Environment import Environment
+    SH = Environment()
+
     rospy.init_node('smach_example_state_machine')
 
     # Create a SMACH state machine
