@@ -29,10 +29,11 @@ class Rest(smach.State):
     def execute(self, userdata):
         SH.show_on_led(SH.get_humidity(), (232, 121, 121))
         SH.show_on_led(get_time_string(), (55, 55, 255))
+        SH.show_on_led('ZEAKKK', (232, 121, 121))
         publish_state()
 
         time.sleep(3)
-        return 'waking up'
+        return 'let me rest'
 
 class Awake(smach.State):
     def __init__(self):
