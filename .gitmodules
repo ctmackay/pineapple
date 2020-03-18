@@ -1,4 +1,4 @@
 [submodule "main_controller/src/sensors/chirp-rpi"]
 	path = main_controller/src/sensors/chirp-rpi
-	url = https://github.com/ageir/chirp-rpi
+	url = https://github.com/ctmackay/chirp-rpi
 	branch = master
